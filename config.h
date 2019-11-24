@@ -13,4 +13,4 @@ struct ConfigParms {
     unsigned int numCouriers;				// number of couriers in the pool
 }; // ConfigParms
 
-void processConfigFile( const char * configFile, ConfigParms & cparms );
+void processConfigFile(const char * configFile, ConfigParms & cparms);
