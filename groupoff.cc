@@ -40,6 +40,5 @@ Groupoff::Groupoff( Printer & prt, unsigned int numStudents, unsigned int sodaCo
     }
 
 Groupoff::~Groupoff() {
-    delete cards;
+    delete[] cards;
 }
-
