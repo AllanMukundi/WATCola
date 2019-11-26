@@ -2,7 +2,7 @@ CXX = u++				# compiler
 CXXFLAGS = -g -Wall -Wextra -MMD -Wno-implicit-fallthrough # compiler flags
 MAKEFILE_NAME = ${firstword ${MAKEFILE_LIST}}# makefile name
 
-OBJECTS = printer.o # list of object files needed
+OBJECTS = groupoff.o # list of object files needed
 EXEC = soda
 
 DEPENDS = ${OBJECTS:.o=.d}
