@@ -26,7 +26,3 @@ void Bank::withdraw(unsigned int id, unsigned int amount) {
     }
     accountBalances[id] -= amount;
 }
-
-Bank::~Bank() {
-    delete[] accountBalances;
-}

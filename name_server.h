@@ -1,4 +1,5 @@
 #pragma once
+#include "vending_machine.h"
 
 _Task NameServer {
 	void main();

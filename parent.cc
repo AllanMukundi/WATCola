@@ -1,3 +1,4 @@
+#include "MPRNG.h"
 #include "parent.h"
 
 extern MPRNG mprng;
