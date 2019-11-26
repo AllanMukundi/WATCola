@@ -1,6 +1,7 @@
 #pragma once
 
 #include "bank.h"
+#include "MPRNG.h"
 #include "printer.h"
 
 _Task Parent {
