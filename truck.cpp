@@ -1,12 +1,12 @@
 #include "MPRNG.h"
 #include "truck.h"
-#include "printer.h"
+#include "vending_machine.h"
 #include <limits.h>
 
 extern MPRNG mprng;
 
 Truck::Truck(Printer &prt, NameServer &nameServer, BottlingPlant &plant,
-		     unsigned int numVendingMachines, unsigned int maxStockPerFlavour):
+             unsigned int numVendingMachines, unsigned int maxStockPerFlavour):
                 printer(prt), nameServer(nameServer), plant(plant),
                 numVendingMachines(numVendingMachines), 
                 maxStockPerFlavour(maxStockPerFlavour) {}
@@ -36,9 +36,9 @@ void Truck::main() {
         // If the bottling plant is closing down, the truck terminates 
         // (error thrown).
         try {
-            plant.getShipment(cargo);
+            plant.getShipment(truckStorage);
             printer.print(Printer::Truck, 'P');
-        } catch (BottlingPlant::Shutdown) {
+        } catch (BottlingPlant::Shutdown &) {
             break;
         }
 
@@ -70,11 +70,11 @@ void Truck::main() {
             unsigned missing = 0; // Keep track of left overs for print statement.
             for (unsigned j = 0; j < NUM_FLAVORS; j++) {
                 // Figure out how many bottles to add, and update the right bins.
-                unsigned bottlesAdded = min(truckStorage[j], maxStockPerFlavour - inventory[j]);
+                unsigned bottlesAdded = std::min(truckStorage[j], maxStockPerFlavour - inventory[j]);
                 inventory[j] += bottlesAdded;
                 truckStorage[j] -= bottlesAdded;
 
-                total -= bottlesAdded;
+                totalBottles -= bottlesAdded;
 
                 // See if there is still some room in the vending machine. 
                 // Necessary for print statement.

@@ -1,4 +1,5 @@
 #pragma once
+#include "name_server.h"
 
 _Task BottlingPlant {
 	void main();
