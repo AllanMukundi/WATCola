@@ -1,6 +1,5 @@
 #include "name_server.h"
 
-<<<<<<< HEAD
 void NameServer::VMregister( VendingMachine *vendingMachine) {
     unsigned id = vendingMachine->getId();
     machines[id] = vendingMachine;
@@ -12,7 +11,7 @@ VendingMachine * NameServer::getMachine(unsigned id) {
     VendingMachine *requestedMachine = machines[currentMachine];
     currentMachine = (currentMachine + 1) % numVendingMachines;
     assignment[id] = currentMachine;
-    printer.print(Printer::Kind::NameServer, 'N', currentMachine);
+    printer.print(Printer::Kind::NameServer, 'N', id, currentMachine);
     return requestedMachine;
 }
 
