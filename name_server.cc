@@ -1,5 +1,6 @@
 #include "name_server.h"
 
+<<<<<<< HEAD
 void NameServer::VMregister( VendingMachine *vendingMachine) {
     unsigned id = vendingMachine->getId();
     machines[id] = vendingMachine;
