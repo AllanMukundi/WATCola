@@ -1,9 +1,13 @@
 #pragma once
+#include "wat_card.h"
+#include "name_server.h"
+
+_Task NameServer;
 
 _Task VendingMachine {
 	void main();
   public:
-	enum Flavours { ... }; 				// flavours of soda (YOU DEFINE)
+	enum Flavours { BlackCherry, CreamSoda, RootBeer, Lime }; 				// flavours of soda (YOU DEFINE)
 	_Event Free {};						// free, advertisement
 	_Event Funds {};					// insufficient funds
 	_Event Stock {};					// out of stock for particular flavour

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include "MPRNG.h"
 #include "config.h"
 
@@ -23,7 +24,7 @@ void usage(char *argv[]) {
  *  storage - place to put converted cmd line arg 
  * Output: the read in value from argv
  *********************/
-unsigned get_cmd_line_arg(char *arg, char *argv) {
+unsigned get_cmd_line_arg(char *arg, char *argv[]) {
     unsigned storage;
     istringstream iss(arg);
     if (iss >> storage) {
