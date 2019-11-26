@@ -18,7 +18,6 @@ void Parent::main() {
             unsigned studentID = mprng(numStudents - 1);
 
             // Get the amount of money.
-            // TODO: does mprng include the upper bound?
             unsigned moneyAmount = mprng(1, 3);
 
             // Deposit!

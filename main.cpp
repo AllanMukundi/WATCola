@@ -15,18 +15,25 @@ void usage(char *argv[]) {
 	exit(EXIT_FAILURE);
 }
 
-// Convert a char to a unsigned int.
-unsigned unsignedIntConvert(char *arg, char *argv[]) {
-    try {
-        if (stoi(arg) < 0) {
-            // Don't allow negatives.
-            throw 1;
-        }
-        return stoi(arg);
-    } catch (...) {
-        usage(argv); 
+/**********************
+ * get_cmd_line_arg - tries to interpret cmd line arg as an integer > 0
+ *   
+ * Inputs:          
+ *  arg     - cmd line arg              
+ *  storage - place to put converted cmd line arg 
+ * Output: the read in value from argv
+ *********************/
+unsigned get_cmd_line_arg(char *arg, char *argv) {
+    unsigned storage;
+    istringstream iss(arg);
+    if (iss >> storage) {
+        if (storage <= 0 || storage > INT_MAX) {
+            usage(argv);
+        }                
+    } else {                
+        usage(argv);
     }
-    return 0;
+    return storage;                   
 }
 
 int main(int argc, char *argv[]) {
@@ -38,9 +45,7 @@ int main(int argc, char *argv[]) {
     switch (argc) {
         // Seed
 		case 3: {
-            seed = unsignedIntConvert(argv[2], argv);
-            if (seed == 0)
-                usage(argv);
+            seed = get_cmd_line_arg(argv[2], argv);
         }
 		case 2: {
             configFile = argv[1];
