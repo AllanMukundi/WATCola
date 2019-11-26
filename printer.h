@@ -1,19 +1,19 @@
 #pragma once
 
 _Monitor Printer {
-    const unsigned int numStudents, numVendingMachines, numCouriers, Undefined;
-    const unsigned int INVALID_VALUE = UINT_MAX;
-    unsigned int totalCols;
-    unsigned int cnt = 0;                // number of filled buffer elements
-    unsigned int prev = UINT_MAX;        // previous inserter into the buffer
+    const unsigned numStudents, numVendingMachines, numCouriers, Undefined;
+    const unsigned INVALID_VALUE = UINT_MAX;
+    unsigned totalCols;
+    unsigned cnt = 0;                // number of filled buffer elements
+    unsigned prev = UINT_MAX;        // previous inserter into the buffer
 
     // Defines information that needs to be tracked
     struct Info {
-        unsigned int id;
-        unsigned int lid;
+        unsigned id;
+        unsigned lid;
         char state;
-        unsigned int value1;
-        unsigned int value2;
+        unsigned value1;
+        unsigned value2;
     } curr, *columns;
 
     bool details(Info &column);

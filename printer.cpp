@@ -31,7 +31,7 @@ bool Printer::details(Info &column) {
  *       make the printer more robust by separating out each case because that solution would rely
  *       on the order of elements in enum Kind to never change
  *********************/
-unsigned int Printer::translate(Kind kind, unsigned int lid) {
+unsigned Printer::translate(Kind kind, unsigned lid) {
     if (kind == Kind::Parent) {
         return 0;
     } else if (kind == Kind::Groupoff) {
@@ -59,7 +59,7 @@ unsigned int Printer::translate(Kind kind, unsigned int lid) {
 void Printer::flush() {
     int tmp_cnt = cnt;
     cnt = 0;
-    for(unsigned int i = 0; i < totalCols; ++i) {
+    for(unsigned i = 0; i < totalCols; ++i) {
         if (details(columns[i])) {
             cout << columns[i].state;
             if (columns[i].value1 != INVALID_VALUE) {
@@ -68,7 +68,7 @@ void Printer::flush() {
                     cout << "," << columns[i].value2;
                 }
             }
-            tmp_cnt -= 1;
+            tmp_cnt--;
         }
 
         columns[i].id = Undefined;
@@ -85,7 +85,7 @@ void Printer::flush() {
 }
 
 void Printer::print( Kind kind, char state ) {
-    unsigned int idx = translate(kind);
+    unsigned idx = translate(kind);
     if (prev == idx || columns[idx].id != Undefined) {
         flush();
     }
@@ -96,11 +96,11 @@ void Printer::print( Kind kind, char state ) {
     curr.value2 = INVALID_VALUE;
     columns[idx] = curr;
     prev = idx;
-    cnt += 1;
+    cnt++;
 }
 
-void Printer::print( Kind kind, char state, unsigned int value1 ) {
-    unsigned int idx = translate(kind);
+void Printer::print( Kind kind, char state, unsigned value1 ) {
+    unsigned idx = translate(kind);
     if (prev == idx || columns[idx].id != Undefined) {
         flush();
     }
@@ -111,11 +111,11 @@ void Printer::print( Kind kind, char state, unsigned int value1 ) {
     curr.value2 = INVALID_VALUE;
     columns[idx] = curr;
     prev = idx;
-    cnt += 1;
+    cnt++;
 }
 
-void Printer::print( Kind kind, char state, unsigned int value1, unsigned int value2 ) {
-    unsigned int idx = translate(kind);
+void Printer::print( Kind kind, char state, unsigned value1, unsigned value2 ) {
+    unsigned idx = translate(kind);
     if (prev == idx || columns[idx].id != Undefined) {
         flush();
     }
@@ -126,11 +126,11 @@ void Printer::print( Kind kind, char state, unsigned int value1, unsigned int va
     curr.value2 = value2;
     columns[idx] = curr;
     prev = idx;
-    cnt += 1;
+    cnt++;
 }
 
-void Printer::print( Kind kind, unsigned int lid, char state ) {
-    unsigned int idx = translate(kind, lid);
+void Printer::print( Kind kind, unsigned lid, char state ) {
+    unsigned idx = translate(kind, lid);
     if (prev == idx || columns[idx].id != Undefined) {
         flush();
     }
@@ -141,11 +141,11 @@ void Printer::print( Kind kind, unsigned int lid, char state ) {
     curr.value2 = INVALID_VALUE;
     columns[idx] = curr;
     prev = idx;
-    cnt += 1;
+    cnt++;
 }
 
-void Printer::print( Kind kind, unsigned int lid, char state, unsigned int value1 ) {
-    unsigned int idx = translate(kind, lid);
+void Printer::print( Kind kind, unsigned lid, char state, unsigned value1 ) {
+    unsigned idx = translate(kind, lid);
     if (prev == idx || columns[idx].id != Undefined) {
         flush();
     }
@@ -156,11 +156,11 @@ void Printer::print( Kind kind, unsigned int lid, char state, unsigned int value
     curr.value2 = INVALID_VALUE;
     columns[idx] = curr;
     prev = idx;
-    cnt += 1;
+    cnt++;
 }
 
-void Printer::print( Kind kind, unsigned int lid, char state, unsigned int value1, unsigned int value2 ) {
-    unsigned int idx = translate(kind, lid);
+void Printer::print( Kind kind, unsigned lid, char state, unsigned value1, unsigned value2 ) {
+    unsigned idx = translate(kind, lid);
     if (prev == idx || columns[idx].id != Undefined) {
         flush();
     }
@@ -171,10 +171,10 @@ void Printer::print( Kind kind, unsigned int lid, char state, unsigned int value
     curr.value2 = value2;
     columns[idx] = curr;
     prev = idx;
-    cnt += 1;
+    cnt++;
 }
 
-Printer::Printer( unsigned int numStudents, unsigned int numVendingMachines, unsigned int numCouriers ):
+Printer::Printer( unsigned numStudents, unsigned numVendingMachines, unsigned numCouriers ):
     numStudents(numStudents), numVendingMachines(numVendingMachines), numCouriers(numCouriers),
     Undefined(numStudents + numVendingMachines + numCouriers + 6) // 6 other entities besides those added
 {
@@ -182,31 +182,31 @@ Printer::Printer( unsigned int numStudents, unsigned int numVendingMachines, uns
     columns = new Info[totalCols];
 
     // Initialize undefined state 
-    for (unsigned int i = 0; i < totalCols; ++i) {
+    for (unsigned i = 0; i < totalCols; ++i) {
         columns[i].id = Undefined;
     }
     // Print header
-    cout << "Parent\t";
-    cout << "Gropoff\t";
-    cout << "WATOff\t";
-    cout << "Names\t";
-    cout << "Truck\t";
-    cout << "Plant\t";
-    for (unsigned int i = 0; i < numStudents; ++i) {
-        cout << "Stud"+to_string(i)+"\t";
+    cout << "Parent\t"
+         << "Gropoff\t"
+         << "WATOff\t"
+         << "Names\t"
+         << "Truck\t"
+         << "Plant\t";
+    for (unsigned i = 0; i < numStudents; ++i) {
+        cout << "Stud" << i << "\t";
     }
-    for (unsigned int i = 0; i < numVendingMachines; ++i) {
-        cout << "Mach"+to_string(i)+"\t";
+    for (unsigned i = 0; i < numVendingMachines; ++i) {
+        cout << "Mach" << i << "\t";
     }
-    for (unsigned int i = 0; i < numCouriers; ++i) {
-        cout << "Cour"+to_string(i);
+    for (unsigned i = 0; i < numCouriers; ++i) {
+        cout << "Cour" << i;
         if (i < numCouriers-1) {
             cout << "\t";
         }
     }
     cout << endl;
     // Print asterisks
-    for (unsigned int i = 0; i < totalCols; ++i) {
+    for (unsigned i = 0; i < totalCols; ++i) {
         cout << "*******";
         if (i < totalCols-1) {
             cout << "\t";
