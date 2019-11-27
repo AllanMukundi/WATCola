@@ -217,6 +217,6 @@ Printer::Printer( unsigned numStudents, unsigned numVendingMachines, unsigned nu
 
 Printer::~Printer() {
     flush(); // there could still be an unprinted row that was never prompted b/c no more input
-    delete columns;
+    delete[] columns;
     cout << "***********************" << endl;
 }
