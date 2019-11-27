@@ -6,25 +6,40 @@ void VendingMachine::main() {
     printer.print(Printer::Kind::Vending, 'S', sodaCost);
     nameServer.VMregister(this);
     while(true) {
-        _Accept( ~VendingMachine ) {
-            break;
-        } or _Accept ( restocked ) {
-            printer.print(Printer::Kind::Vending, 'R');
-            is_restocking = false;
-        } or _Accept ( inventory ) {
-            printer.print(Printer::Kind::Vending, 'r');
-            is_restocking = true;
-        } or _When (!is_restocking) _Accept( buy ) {}
+        try {
+            _Accept( ~VendingMachine ) {
+                break;
+            } or _Accept ( restocked ) {
+                printer.print(Printer::Kind::Vending, 'R');
+                is_restocking = false;
+            } or _Accept ( inventory ) {
+                printer.print(Printer::Kind::Vending, 'r');
+                is_restocking = true;
+            } or _When (!is_restocking) _Accept( buy ) {}
+        } catch ( uMutexFailure::RendezvousFailure &e) {
+            if (error == Errors::FundsError) {
+                _Throw Funds{};
+            } else if (error == Errors::StockError) {
+                _Throw Stock{};
+            } else if (error == Errors::FreeError) {
+                _Throw Free{};
+            } else {
+                _Throw e;
+            }
+        }
     }
     printer.print(Printer::Kind::Vending, 'F', sodaCost);
 }
 
 void VendingMachine::buy( Flavours flavour, WATCard &card) {
     if (sodaCost > card.getBalance()) {
+        error = Errors::FundsError;
         _Throw Funds{};
     } else if (stock[flavour] == 0) {
+        error = Errors::StockError;
         _Throw Stock{};
     } else if (mprng(4) == 0) { // 1 in 5 chance this is true
+        error = Errors::FreeError;
         _Throw Free{};
     }
     stock[flavour]--;
