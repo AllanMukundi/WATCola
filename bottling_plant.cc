@@ -1,10 +1,12 @@
 #include "bottling_plant.h"
+#include "truck.h"
+#include "MPRNG.h"
 
 extern MPRNG mprng;
 
-BottlingPlant::main() {
+void BottlingPlant::main() {
     printer.print(Printer::BottlingPlant, 'S');
-    Truck truck(printer, nameServer, this, numVendingMachines, maxStockPerFlavour);
+    Truck truck(printer, nameServer, *this, numVendingMachines, maxStockPerFlavour);
     while(true) {
         _Accept( ~BottlingPlant ) {
             is_closing = true;
