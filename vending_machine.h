@@ -10,8 +10,6 @@ _Task VendingMachine {
 	const unsigned NUM_FLAVOURS = 4;
     bool is_restocking = false;
     unsigned *stock;
-    enum Errors { FundsError, StockError, FreeError };
-    Errors error; // flag for raising errors
 
     Printer &printer;
     NameServer &nameServer;
