@@ -7,9 +7,9 @@ _Task BottlingPlant {
     Printer &printer;
     NameServer &nameServer;
     unsigned numVendingMachines, maxShippedPerFlavour, maxStockPerFlavour, timeBetweenShipments;
-    const unsigned NUM_FLAVOURS = 4;
+    static const unsigned NUM_FLAVOURS = 4;
     bool isClosing = false;
-    unsigned *shipment;
+    unsigned shipment[NUM_FLAVOURS];
 
 	void main();
   public:

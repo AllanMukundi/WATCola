@@ -13,7 +13,6 @@ void BottlingPlant::main() {
             break;
         } _Else {
             yield(timeBetweenShipments);
-            shipment = new unsigned[NUM_FLAVOURS];
             unsigned bottleCount = 0;
             for(unsigned i = 0; i < NUM_FLAVOURS; ++i) {
                 shipment[i] = mprng(maxShippedPerFlavour);
@@ -38,7 +37,6 @@ void BottlingPlant::getShipment(unsigned cargo[]) {
     for(unsigned i = 0; i < NUM_FLAVOURS; ++i) {
         cargo[i] = shipment[i];
     }
-    delete shipment;
     printer.print(Printer::BottlingPlant, 'P');
 }
 
