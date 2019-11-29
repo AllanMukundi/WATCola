@@ -1,6 +1,7 @@
 #pragma once
 #include "wat_card.h"
 #include "name_server.h"
+#include "printer.h"
 
 _Task NameServer;
 
