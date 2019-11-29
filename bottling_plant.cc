@@ -9,14 +9,18 @@ void BottlingPlant::main() {
     Truck truck(printer, nameServer, *this, numVendingMachines, maxStockPerFlavour);
     while(true) {
         _Accept( ~BottlingPlant ) {
-            is_closing = true;
+            isClosing = true;
             break;
         } _Else {
             yield(timeBetweenShipments);
-            bottle_count = 0;
+            shipment = new unsigned[NUM_FLAVOURS];
+            unsigned bottleCount = 0;
+            for(unsigned i = 0; i < NUM_FLAVOURS; ++i) {
+                shipment[i] = mprng(maxShippedPerFlavour);
+                bottleCount += shipment[i];
+            }
+            printer.print(Printer::BottlingPlant, 'G', bottleCount);
             _Accept( getShipment );
-            printer.print(Printer::BottlingPlant, 'G', bottle_count);
-            printer.print(Printer::BottlingPlant, 'P');
         }
     }
 
@@ -28,14 +32,14 @@ void BottlingPlant::main() {
 }
 
 void BottlingPlant::getShipment(unsigned cargo[]) {
-    if (is_closing) {
+    if (isClosing) {
         _Throw Shutdown{};
     }
     for(unsigned i = 0; i < NUM_FLAVOURS; ++i) {
-        unsigned amount = mprng(maxShippedPerFlavour);
-        bottle_count += amount;
-        cargo[i] = amount;
+        cargo[i] = shipment[i];
     }
+    delete shipment;
+    printer.print(Printer::BottlingPlant, 'P');
 }
 
 BottlingPlant::BottlingPlant( Printer & prt, NameServer & nameServer, unsigned int numVendingMachines,

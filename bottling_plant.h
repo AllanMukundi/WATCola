@@ -8,8 +8,8 @@ _Task BottlingPlant {
     NameServer &nameServer;
     unsigned numVendingMachines, maxShippedPerFlavour, maxStockPerFlavour, timeBetweenShipments;
     const unsigned NUM_FLAVOURS = 4;
-    unsigned bottle_count = 0;
-    bool is_closing = false;
+    bool isClosing = false;
+    unsigned *shipment;
 
 	void main();
   public:
