@@ -28,7 +28,6 @@ void VendingMachine::buy( Flavours flavour, WATCard &card) {
         _Throw Stock{};
     } else if (mprng(4) == 0) { // 1 in 5 chance this is true
         stock[flavour]--;
-        printer.print(Printer::Vending, 'B', flavour, stock[flavour]);
         _Throw Free{};
     }
     stock[flavour]--;
