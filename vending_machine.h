@@ -1,6 +1,7 @@
 #pragma once
 #include "wat_card.h"
 #include "name_server.h"
+#include "printer.h"
 
 _Task NameServer;
 
@@ -11,9 +12,9 @@ _Task VendingMachine {
 	_Event Free {};						// free, advertisement
 	_Event Funds {};					// insufficient funds
 	_Event Stock {};					// out of stock for particular flavour
-	VendingMachine( Printer & prt, NameServer & nameServer, unsigned int id, unsigned int sodaCost );
-	void buy( Flavours flavour, WATCard & card );
-	unsigned int * inventory();
+	VendingMachine(Printer &prt, NameServer &nameServer, unsigned int id, unsigned int sodaCost);
+	void buy(Flavours flavour, WATCard &card);
+	unsigned int *inventory();
 	void restocked();
 	_Nomutex unsigned int cost() const;
 	_Nomutex unsigned int getId() const;
