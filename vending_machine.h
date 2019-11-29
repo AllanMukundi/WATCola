@@ -8,7 +8,7 @@ _Task NameServer;
 
 _Task VendingMachine {
 	const unsigned NUM_FLAVOURS = 4;
-    bool is_restocking = false;
+    bool isRestocking = false;
     unsigned *stock;
 
     Printer &printer;

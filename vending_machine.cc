@@ -11,14 +11,14 @@ void VendingMachine::main() {
                 break;
             } or _Accept ( restocked ) {
                 printer.print(Printer::Vending, 'R');
-                is_restocking = false;
+                isRestocking = false;
             } or _Accept ( inventory ) {
                 printer.print(Printer::Vending, 'r');
-                is_restocking = true;
-            } or _When (!is_restocking) _Accept( buy ) {}
+                isRestocking = true;
+            } or _When (!isRestocking) _Accept( buy ) {}
         } catch ( uMutexFailure::RendezvousFailure &e) {}
     }
-    printer.print(Printer::Vending, 'F', sodaCost);
+    printer.print(Printer::Vending, 'F');
 }
 
 void VendingMachine::buy( Flavours flavour, WATCard &card) {
@@ -27,6 +27,8 @@ void VendingMachine::buy( Flavours flavour, WATCard &card) {
     } else if (stock[flavour] == 0) {
         _Throw Stock{};
     } else if (mprng(4) == 0) { // 1 in 5 chance this is true
+        stock[flavour]--;
+        printer.print(Printer::Vending, 'B', flavour, stock[flavour]);
         _Throw Free{};
     }
     stock[flavour]--;
