@@ -79,11 +79,6 @@ void Student::main() {
                     outOfStock(vendingMachine);
                 } catch (WATCardOffice::Lost &) {
                     lostWatCard(watCard);
-                    // TODO: does the following hold any special meaning in
-                    // what we should do in the code?
-                    //      "Note, a courier can lose a student’s WATCard 
-                    //      during the transfer for the new WATCard so this issue 
-                    //      can occur repeatedly.""
                 }
             } or _Select (giftCard) {
                 try {
@@ -110,13 +105,8 @@ void Student::main() {
         }
     }
 
-    // TODO: assignment says the following:
-    //      "Watch out for the case of a student who only buys one 
-    //      soda using the gift card."
-    // I think this is the special case. I don't understand
-    // futures well enough to be sure if we need to "delete" a
-    // future. Or de we cancel it instead?
-    // TODO: is this the right way to delete the `Future` ?
+    // "Watch out for the case of a student who only buys one 
+    // soda using the gift card."
     delete watCard();
 
     // F 
