@@ -1,8 +1,6 @@
 #pragma once
 #include <uFuture.h>
 
-#include <uFuture.h>
-
 class WATCard {
 	WATCard(const WATCard &) = delete;	// prevent copying
 	WATCard & operator=(const WATCard &) = delete;
