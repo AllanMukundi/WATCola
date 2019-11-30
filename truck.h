@@ -4,12 +4,12 @@
 #include "name_server.h"
 
 _Task Truck {
-	const unsigned NUM_FLAVORS = 4;
+    const unsigned NUM_FLAVOURS = 4;
 
-	Printer &printer;
+    Printer &printer;
 	NameServer &nameServer;
 	BottlingPlant &plant;
-	const unsigned numVendingMachines, maxStockPerFlavour;
+	const unsigned numVendingMachines, maxStockPerFlavour, NUM_FLAVORS=4;
 	
 	void main();
   public:

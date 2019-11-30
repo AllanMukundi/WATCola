@@ -24,7 +24,7 @@ void Truck::main() {
     // Start at -1 (with underflow) so that the first machine will be indexed
     // to 0.
     unsigned nextMachine = -1;
-    unsigned truckStorage[NUM_FLAVORS]; // Has the bottles that we will ship.
+    unsigned truckStorage[NUM_FLAVOURS]; // Has the bottles that we will ship.
 
     while (true) {
         // the truck yields a random number of times [1, 10] 
@@ -45,7 +45,7 @@ void Truck::main() {
         // Keep track of total since machines are restocked
         // "until there is no more soda on the truck".
         unsigned totalBottles = 0;
-        for (unsigned i = 0; i < NUM_FLAVORS; i++) {
+        for (unsigned i = 0; i < NUM_FLAVOURS; i++) {
             totalBottles += truckStorage[i];
         }
 
@@ -68,7 +68,7 @@ void Truck::main() {
 
             // Restock the machine.
             unsigned missing = 0; // Keep track of left overs for print statement.
-            for (unsigned j = 0; j < NUM_FLAVORS; j++) {
+            for (unsigned j = 0; j < NUM_FLAVOURS; j++) {
                 // Figure out how many bottles to add, and update the right bins.
                 unsigned bottlesAdded = std::min(truckStorage[j], maxStockPerFlavour - inventory[j]);
                 inventory[j] += bottlesAdded;

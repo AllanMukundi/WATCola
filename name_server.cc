@@ -3,7 +3,7 @@
 void NameServer::VMregister( VendingMachine *vendingMachine) {
     unsigned id = vendingMachine->getId();
     machines[id] = vendingMachine;
-    printer.print(Printer::Kind::NameServer, 'R', id);
+    printer.print(Printer::NameServer, 'R', id);
 }
 
 VendingMachine * NameServer::getMachine(unsigned id) {
@@ -11,7 +11,7 @@ VendingMachine * NameServer::getMachine(unsigned id) {
     VendingMachine *requestedMachine = machines[currentMachine];
     currentMachine = (currentMachine + 1) % numVendingMachines;
     assignment[id] = currentMachine;
-    printer.print(Printer::Kind::NameServer, 'N', id, currentMachine);
+    printer.print(Printer::NameServer, 'N', id, currentMachine);
     return requestedMachine;
 }
 
@@ -34,7 +34,7 @@ void NameServer::main() {
 
 NameServer::NameServer( Printer & prt, unsigned int numVendingMachines, unsigned int numStudents ):
     printer(prt), numVendingMachines(numVendingMachines), numStudents(numStudents) {
-        printer.print(Printer::Kind::NameServer, 'S');
+        printer.print(Printer::NameServer, 'S');
         machines = new VendingMachine*[numVendingMachines];
         assignment = new unsigned[numStudents];
         // Initial assignment
@@ -48,5 +48,5 @@ NameServer::NameServer( Printer & prt, unsigned int numVendingMachines, unsigned
 NameServer::~NameServer() {
     delete[] machines;
     delete[] assignment;
-    printer.print(Printer::Kind::NameServer, 'F');
+    printer.print(Printer::NameServer, 'F');
 }
