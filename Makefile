@@ -3,7 +3,7 @@ CXXFLAGS = -g -Wall -Wextra -MMD -Wno-implicit-fallthrough # compiler flags
 MAKEFILE_NAME = ${firstword ${MAKEFILE_LIST}}# makefile name
 
 OBJECTS = groupoff.o printer.o truck.o bank.o config.o main.o parent.o bottling_plant.o \
-		  name_server.o vending_machine.o wat_card_office.o # list of object files needed
+		  name_server.o vending_machine.o wat_card_office.o wat_card.o student.o # list of object files needed
 EXEC = soda
 
 DEPENDS = ${OBJECTS:.o=.d}
