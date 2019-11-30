@@ -3,6 +3,8 @@
 extern MPRNG mprng;
 
 void Groupoff::main() {
+    printer.print(Printer::Groupoff, 'S');
+
     for(unsigned i; i < numStudents; ++i) {
         _Accept( giftCard );
     }
@@ -19,11 +21,11 @@ void Groupoff::main() {
             cards[randomIdx].delivery(realCard);
             cards[randomIdx] = cards[numCards-1]; // overwrite "deleted" card 
 
-            printer.print(Printer::Kind::Groupoff, 'D', sodaCost);
+            printer.print(Printer::Groupoff, 'D', sodaCost);
             numCards--; // "shorten" end of array of unassigned cards
             if (numCards == 0) { break; }
         }
-        printer.print(Printer::Kind::Groupoff, 'F');
+        printer.print(Printer::Groupoff, 'F');
     }
 }
 
@@ -35,7 +37,6 @@ WATCard::FWATCard Groupoff::giftCard() {
 
 Groupoff::Groupoff( Printer & prt, unsigned int numStudents, unsigned int sodaCost, unsigned int groupoffDelay ):
     printer(prt), numStudents(numStudents), sodaCost(sodaCost), groupoffDelay(groupoffDelay) {
-        printer.print(Printer::Kind::Groupoff, 'S');
         cards = new WATCard::FWATCard[numStudents];
     }
 

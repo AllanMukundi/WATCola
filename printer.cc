@@ -32,21 +32,21 @@ bool Printer::details(Info &column) {
  *       on the order of elements in enum Kind to never change
  *********************/
 unsigned Printer::translate(Kind kind, unsigned lid) {
-    if (kind == Kind::Parent) {
+    if (kind == Parent) {
         return 0;
-    } else if (kind == Kind::Groupoff) {
+    } else if (kind == Groupoff) {
         return 1;
-    } else if (kind == Kind::WATCardOffice) {
+    } else if (kind == WATCardOffice) {
         return 2;
-    } else if (kind == Kind::NameServer) {
+    } else if (kind == NameServer) {
         return 3;
-    } else if (kind == Kind::Truck) {
+    } else if (kind == Truck) {
         return 4;
-    } else if (kind == Kind::BottlingPlant) {
+    } else if (kind == BottlingPlant) {
         return 5;
-    } else if (kind == Kind::Student) {
+    } else if (kind == Student) {
         return 6+lid;
-    } else if (kind == Kind::Vending) {
+    } else if (kind == Vending) {
         return 6 + numStudents + lid;
     } else {
         return 6 + numStudents + numVendingMachines + lid;
