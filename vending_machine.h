@@ -3,6 +3,7 @@
 #include "MPRNG.h"
 #include "name_server.h"
 #include "wat_card.h"
+#include "printer.h"
 
 _Task NameServer;
 
