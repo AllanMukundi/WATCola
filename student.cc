@@ -14,7 +14,6 @@ void Student::freeDrink(char c, VendingMachine::Flavours favFlavour, unsigned ba
 }
 
 void Student::insufficientFunds(VendingMachine *vendingMachine, WATCard::FWATCard watCard) {
-    delete watCard();
     watCard = cardOffice.transfer(id, 5 + vendingMachine->cost(), watCard());
 }
 
@@ -38,19 +37,20 @@ void Student::main() {
     // "A student begins by:
     //     - selecting a random number of bottles to purchase [1, `maxPurchases`]
     //     - a random favourite flavour [0, 3]
-    //     - creates a WATCard via the `WATCardOffice` with a $5 balance, 
-    //     - creates a gift card via the `Groupoff` with a value of `SodaCost`
-    //     - obtains the location of a vending machine from the name server"
     unsigned bottlesToPurchase = mprng(1, maxPurchases);
-    VendingMachine::Flavours favFlavour = (VendingMachine::Flavours)mprng(0, NUM_FLAVORS);
-    WATCard::FWATCard watCard = cardOffice.create(id, 5);
-    WATCard::FWATCard giftCard = groupoff.giftCard();
-    VendingMachine *vendingMachine = nameServer.getMachine(id);
+    VendingMachine::Flavours favFlavour = (VendingMachine::Flavours)mprng(0, NUM_FLAVORS-1);
 
     // S f ,b 
     // starting favourite soda f 
     // number of bottles b to purchase
     printer.print(Printer::Student, id, 'S', favFlavour, bottlesToPurchase);
+
+    //     - creates a WATCard via the `WATCardOffice` with a $5 balance, 
+    //     - creates a gift card via the `Groupoff` with a value of `SodaCost`
+    //     - obtains the location of a vending machine from the name server"
+    VendingMachine *vendingMachine = nameServer.getMachine(id);
+    WATCard::FWATCard watCard = cardOffice.create(id, 5);
+    WATCard::FWATCard giftCard = groupoff.giftCard();
 
     // V v 
     // selecting vending machine 
