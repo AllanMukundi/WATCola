@@ -5,7 +5,7 @@ extern MPRNG mprng;
 void Groupoff::main() {
     printer.print(Printer::Groupoff, 'S');
 
-    for(unsigned i; i < numStudents; ++i) {
+    for(unsigned i = 0; i < numStudents; ++i) {
         _Accept( giftCard );
     }
 
@@ -25,8 +25,9 @@ void Groupoff::main() {
             numCards--; // "shorten" end of array of unassigned cards
             if (numCards == 0) { break; }
         }
-        printer.print(Printer::Groupoff, 'F');
     }
+
+    printer.print(Printer::Groupoff, 'F');
 }
 
 WATCard::FWATCard Groupoff::giftCard() {
