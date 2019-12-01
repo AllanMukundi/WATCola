@@ -1,6 +1,6 @@
 #include "student.h"
 #include "MPRNG.h"
-
+#include <iostream>
 extern MPRNG mprng;
 
 Student::Student(Printer &prt, NameServer &nameServer, WATCardOffice &cardOffice, 
@@ -112,10 +112,29 @@ void Student::main() {
 
     // "Watch out for the case of a student who only buys one 
     // soda using the gift card."
-    delete giftCard();
-    try {
-      delete watCard();
-    } catch (WATCardOffice::Lost &) {}
+    // std::cout << "AAA" << std::endl;
+    // delete giftCard();
+    // std::cout << "BBB" << std::endl;
+    // try {
+    //   delete watCard();
+    // } catch (WATCardOffice::Lost &) {}
+    // std::cout << "CCC" << std::endl;
+    std::cout << "AAA" << std::endl;
+    _Select (watCard) {
+        std::cout << "BBB" << std::endl;
+        try {
+            WATCard *physicalcard = watCard();
+            std::cout << "B1" << std::endl;
+            delete physicalcard;
+        } catch (WATCardOffice::Lost &) {}
+        std::cout << "CCC" << std::endl;
+    }
+    
+    std::cout << "DDD" << std::endl;
+    _Select (giftCard) {
+        WATCard *gift = giftCard();
+        delete gift;
+    }
 
     // F 
     // finished
