@@ -7,7 +7,7 @@
 
 
 _Task Student {
-    const unsigned NUM_FLAVORS = 4;
+    const unsigned NUM_FLAVOURS = 4;
     Printer &printer;
     NameServer &nameServer;
     WATCardOffice &cardOffice;

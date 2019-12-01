@@ -36,11 +36,10 @@ void Student::lostWatCard(WATCard::FWATCard &watCard) {
 
 void Student::main() {
     unsigned bottlesToPurchase = mprng(1, maxPurchases);
-    // VendingMachine::Flavours favouriteFlavour = (VendingMachine::Flavours)mprng(3);
     VendingMachine::Flavours favouriteFlavour = (VendingMachine::Flavours)mprng(NUM_FLAVOURS-1);
+    WATCard::FWATCard watCard = cardOffice.create(id, 5);
 
     printer.print(Printer::Kind::Student, id, 'S', (int)favouriteFlavour, bottlesToPurchase);
-    WATCard::FWATCard watcard = cardOffice.create(id, 5);
     WATCard::FWATCard giftcard = groupoff.giftCard();
 
     // buy sodas
@@ -51,10 +50,10 @@ void Student::main() {
         printer.print(Printer::Kind::Student, id, 'V', machine->getId());
         try {
             // block until student has a card
-            _Select(watcard || giftcard) {
-                if (watcard.available()) {
-                    // try to use watcard if available
-                    WATCard *physicalcard = watcard(); // Checking if an exception is thrown
+            _Select(watCard || giftcard) {
+                if (watCard.available()) {
+                    // try to use watCard if available
+                    WATCard *physicalcard = watCard(); // Checking if an exception is thrown
 
                     for (;;) {
                         try {
@@ -62,7 +61,7 @@ void Student::main() {
                         printer.print(Printer::Kind::Student, id, 'B', physicalcard->getBalance());
                         break;
                         } catch (VendingMachine::Funds e) {
-                        watcard = cardOffice.transfer(id, machine->cost() + 5, physicalcard);
+                        watCard = cardOffice.transfer(id, machine->cost() + 5, physicalcard);
                         break;
                         } catch (VendingMachine::Stock e) {
                         machine = nameServer.getMachine(id);
@@ -87,17 +86,17 @@ void Student::main() {
             }
             purchased += 1;
         } catch (WATCardOffice::Lost e) {
-            // create new watcard if lost
+            // create new watCard if lost
             printer.print(Printer::Kind::Student, id, 'L');
-            watcard.reset();
-            watcard = cardOffice.create(id, 5);
+            watCard.reset();
+            watCard = cardOffice.create(id, 5);
         }
     }
 
     // Freeing (Deallocating) the dynamically allocated spaces
-    _Select (watcard) {
+    _Select (watCard) {
         try {
-        WATCard *physicalcard = watcard();
+        WATCard *physicalcard = watCard();
         delete physicalcard;
         } catch (WATCardOffice::Lost e) {
         }
