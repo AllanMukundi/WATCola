@@ -3,8 +3,8 @@
 extern MPRNG mprng;
 
 void VendingMachine::main() {
-    printer.print(Printer::Vending, 'S', sodaCost);
     nameServer.VMregister(this);
+    printer.print(Printer::Vending, 'S', sodaCost);
     while(true) {
         try {
             _Accept( ~VendingMachine ) {

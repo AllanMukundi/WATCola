@@ -7,9 +7,10 @@ Parent::Parent(Printer &prt, Bank &bank, unsigned int numStudents, unsigned int 
     bank(bank), printer(prt), numStudents(numStudents), parentalDelay(parentalDelay) {}
 
 void Parent::main() {
+    printer.print(Printer::Parent, 'S');
     while (true) {
         _Accept(Parent::~Parent) {
-            return;
+            break;
         } _Else {
             // Before each gift is transferred, the parent yields for 
             // `parentalDelay` times (not random).
@@ -21,8 +22,12 @@ void Parent::main() {
             // Get the amount of money.
             unsigned moneyAmount = mprng(1, 3);
 
+            // Print.
+            printer.print(Printer::Parent, 'D', studentID, moneyAmount);
+
             // Deposit!
             bank.deposit(studentID, moneyAmount);
         }
     }
+    printer.print(Printer::Parent, 'F');
 }

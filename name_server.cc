@@ -20,6 +20,8 @@ VendingMachine ** NameServer::getMachineList() {
 }
 
 void NameServer::main() {
+    printer.print(Printer::NameServer, 'S');
+
     // Register all machines first
     for (unsigned i = 0; i < numVendingMachines; ++i) {
         _Accept( VMregister );
@@ -30,11 +32,12 @@ void NameServer::main() {
             break;
         } or _Accept( getMachine, getMachineList ) {}
     }
+
+    printer.print(Printer::NameServer, 'F');
 }
 
 NameServer::NameServer( Printer & prt, unsigned int numVendingMachines, unsigned int numStudents ):
     printer(prt), numVendingMachines(numVendingMachines), numStudents(numStudents) {
-        printer.print(Printer::NameServer, 'S');
         machines = new VendingMachine*[numVendingMachines];
         assignment = new unsigned[numStudents];
         // Initial assignment
@@ -48,5 +51,4 @@ NameServer::NameServer( Printer & prt, unsigned int numVendingMachines, unsigned
 NameServer::~NameServer() {
     delete[] machines;
     delete[] assignment;
-    printer.print(Printer::NameServer, 'F');
 }
