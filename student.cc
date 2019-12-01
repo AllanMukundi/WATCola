@@ -36,7 +36,8 @@ void Student::lostWatCard(WATCard::FWATCard &watCard) {
 
 void Student::main() {
     unsigned bottlesToPurchase = mprng(1, maxPurchases);
-    VendingMachine::Flavours favouriteFlavour = (VendingMachine::Flavours)mprng(3);
+    // VendingMachine::Flavours favouriteFlavour = (VendingMachine::Flavours)mprng(3);
+    VendingMachine::Flavours favouriteFlavour = (VendingMachine::Flavours)mprng(NUM_FLAVOURS-1);
 
     printer.print(Printer::Kind::Student, id, 'S', (int)favouriteFlavour, bottlesToPurchase);
     WATCard::FWATCard watcard = cardOffice.create(id, 5);
