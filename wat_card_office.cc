@@ -9,6 +9,7 @@ WATCardOffice::WATCardOffice(Printer &prt, Bank &bank, unsigned int numCouriers)
     // "Initially, the WATCard office creates a fixed-sized courier pool with 
     // numCouriers courier tasks to communicate with the bank. (Additional 
     // couriers may not be created after the WATCardOffice begins.)"
+    printer.print(Printer::WATCardOffice, 'S');
     couriers = new Courier*[numCouriers];
     for (unsigned i = 0; i < numCouriers; i++) {
      couriers[i] = new Courier(bank, printer, *this, i);
@@ -61,7 +62,6 @@ WATCard::FWATCard WATCardOffice::create(unsigned int sid, unsigned int amount) {
 void WATCardOffice::main() {
     // S 
     // starting
-    printer.print(Printer::WATCardOffice, 'S');
 
     while (true) {
         _Accept(~WATCardOffice) {

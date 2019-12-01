@@ -4,7 +4,7 @@ extern MPRNG mprng;
 
 void VendingMachine::main() {
     nameServer.VMregister(this);
-    printer.print(Printer::Vending, 'S', sodaCost);
+    printer.print(Printer::Vending, id, 'S', sodaCost);
     while(true) {
         try {
             _Accept( ~VendingMachine ) {
@@ -18,7 +18,7 @@ void VendingMachine::main() {
             } or _When (!isRestocking) _Accept( buy ) {}
         } catch ( uMutexFailure::RendezvousFailure &e) {}
     }
-    printer.print(Printer::Vending, 'F');
+    printer.print(Printer::Vending, id, 'F');
 }
 
 void VendingMachine::buy( Flavours flavour, WATCard &card) {
@@ -32,7 +32,7 @@ void VendingMachine::buy( Flavours flavour, WATCard &card) {
     }
     stock[flavour]--;
     card.withdraw(sodaCost);
-    printer.print(Printer::Vending, 'B', flavour, stock[flavour]);
+    printer.print(Printer::Vending, id, 'B', flavour, stock[flavour]);
 }
 
 unsigned * VendingMachine::inventory() {
