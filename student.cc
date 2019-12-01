@@ -1,6 +1,5 @@
 #include "student.h"
 #include "MPRNG.h"
-#include <iostream>
 
 extern MPRNG mprng;
 
@@ -14,8 +13,9 @@ void Student::freeDrink(char c, VendingMachine::Flavours favFlavour, unsigned ba
     printer.print(Printer::Student, id, c, favFlavour, balance);
 }
 
-void Student::insufficientFunds(VendingMachine *vendingMachine, WATCard *watCard) {
-    watCard = cardOffice.transfer(id, 5 + vendingMachine->cost(), watCard);
+void Student::insufficientFunds(VendingMachine *vendingMachine, WATCard::FWATCard watCard) {
+    delete watCard();
+    watCard = cardOffice.transfer(id, 5 + vendingMachine->cost(), watCard());
 }
 
 void Student::outOfStock(VendingMachine *&vendingMachine) {
@@ -30,11 +30,17 @@ void Student::lostWatCard(WATCard::FWATCard &watCard) {
     // L 
     // WATCard lost
     printer.print(Printer::Student, id, 'L');
-    watCard.reset();
+    delete watCard();
     watCard = cardOffice.create(id, 5);
 }
 
 void Student::main() {
+    // "A student begins by:
+    //     - selecting a random number of bottles to purchase [1, `maxPurchases`]
+    //     - a random favourite flavour [0, 3]
+    //     - creates a WATCard via the `WATCardOffice` with a $5 balance,
+    //     - creates a gift card via the `Groupoff` with a value of `SodaCost`
+    //     - obtains the location of a vending machine from the name server"
     unsigned bottlesToPurchase = mprng(1, maxPurchases);
     VendingMachine::Flavours favFlavour = (VendingMachine::Flavours)mprng(NUM_FLAVOURS-1);
     WATCard::FWATCard watCard = cardOffice.create(id, 5);
@@ -45,72 +51,68 @@ void Student::main() {
     // number of bottles b to purchase
     printer.print(Printer::Student, id, 'S', favFlavour, bottlesToPurchase);
 
-    // buy sodas
-    size_t purchased = 0;
-    while (purchased < bottlesToPurchase) {
+    for (unsigned i = 0; i < bottlesToPurchase; i++) {
+        // "student yields a random number of times in the range [1, 10]."
         yield(mprng(1, 10));
+
         VendingMachine *vendingMachine = nameServer.getMachine(id);
         // V v 
         // selecting vending machine 
         // vending machine v selected
         printer.print(Printer::Student, id, 'V', vendingMachine->getId());
-        try {
-            // block until student has a card
-            _Select(watCard || giftCard) {
-                if (watCard.available()) {
-                    // try to use watCard if available
-                    WATCard *physicalcard = watCard(); // Checking if an exception is thrown
 
-                    for (;;) {
-                        try {
-                        vendingMachine->buy(favFlavour, *physicalcard);
-                        printer.print(Printer::Kind::Student, id, 'B', physicalcard->getBalance());
-                        break;
-                        } catch (VendingMachine::Funds e) {
-                        watCard = cardOffice.transfer(id, vendingMachine->cost() + 5, physicalcard);
-                        break;
-                        } catch (VendingMachine::Stock e) {
-                        vendingMachine = nameServer.getMachine(id);
-                        printer.print(Printer::Kind::Student, id, 'V', vendingMachine->getId());
-                        }
-                    }
-                } else if (giftCard.available()) {
-                    // try to use gift card if available
-                    for (;;) {
-                        try {
-                            vendingMachine->buy(favFlavour, *giftCard());
-                            printer.print(Printer::Kind::Student, id, 'G', giftCard()->getBalance());
-                            delete giftCard();
-                            giftCard.reset();
-                            break;
-                        } catch (VendingMachine::Stock e) {
-                            vendingMachine = nameServer.getMachine(id);
-                            printer.print(Printer::Kind::Student, id, 'V', vendingMachine->getId());
-                        }
-                    }
+        // "need to wait for money to be transferred either from the
+        // WATCardOffice to their WATCard or from Groupoff to their gift card."
+        _Select(watCard) {
+            while (true) {
+                try {
+                    vendingMachine->buy(favFlavour, *watCard());
+                    // B f,b 
+                    // bought soda 
+                    // soda flavour f purchased, WATCard balance b
+                    printer.print(Printer::Student, id, 'B', favFlavour, watCard()->getBalance());
+                    break;
+                } catch (VendingMachine::Free &) {
+                    freeDrink('A', favFlavour, watCard()->getBalance());
+                    break;
+                } catch (VendingMachine::Funds &) {
+                    insufficientFunds(vendingMachine, watCard);
+                    break;
+                } catch (VendingMachine::Stock &) {
+                    outOfStock(vendingMachine);
+                } catch (WATCardOffice::Lost &) {
+                    lostWatCard(watCard);
                 }
             }
-            purchased += 1;
-        } catch (WATCardOffice::Lost e) {
-            // create new watCard if lost
-            printer.print(Printer::Kind::Student, id, 'L');
-            watCard.reset();
-            watCard = cardOffice.create(id, 5);
+        } or _Select (giftCard) {
+            try {
+                vendingMachine->buy(favFlavour, *giftCard());
+                // G f,b 
+                // gift-card soda 
+                // soda flavour f purchased, giftcard balance b
+                printer.print(Printer::Student, id, 'G', favFlavour, giftCard()->getBalance());
+                // "Note, a giftcard future can only be used once, 
+                // so it must be reset after use to prevent any further usage"
+                giftCard.reset();
+                break;
+            } catch (VendingMachine::Free &) {
+                freeDrink('a', favFlavour, watCard()->getBalance());
+                break;
+            } catch (VendingMachine::Funds &) {
+                insufficientFunds(vendingMachine, watCard);
+                break;
+            } catch (VendingMachine::Stock &) {
+                outOfStock(vendingMachine);
+            }
+            // NOTE: no catch for `WATCardOffice::Lost` since
+            // gift cards can't be lost.
         }
     }
 
-    // Freeing (Deallocating) the dynamically allocated spaces
-    _Select (watCard) {
-        try {
-        WATCard *physicalcard = watCard();
-        delete physicalcard;
-        } catch (WATCardOffice::Lost e) {
-        }
-    }
-    _Select (giftCard) {
-        WATCard *gift = giftCard();
-        delete gift;
-    }
+    // "Watch out for the case of a student who only buys one 
+    // soda using the gift card."
+    delete giftCard();
+    delete watCard();
 
     // F 
     // finished
