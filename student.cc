@@ -14,6 +14,7 @@ void Student::freeDrink(char c, VendingMachine::Flavours favFlavour, unsigned ba
 }
 
 void Student::insufficientFunds(VendingMachine *vendingMachine, WATCard::FWATCard watCard) {
+    delete watCard();
     watCard = cardOffice.transfer(id, 5 + vendingMachine->cost(), watCard());
 }
 
@@ -28,6 +29,7 @@ void Student::outOfStock(VendingMachine *&vendingMachine) {
 void Student::lostWatCard(WATCard::FWATCard &watCard) {
     // L 
     // WATCard lost
+    delete watCard();
     printer.print(Printer::Student, id, 'L');
     watCard = cardOffice.create(id, 5);
 }
@@ -107,6 +109,7 @@ void Student::main() {
 
     // "Watch out for the case of a student who only buys one 
     // soda using the gift card."
+    delete giftCard();
     delete watCard();
 
     // F 
