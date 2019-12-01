@@ -12,12 +12,12 @@ void BottlingPlant::main() {
             isClosing = true;
             break;
         } _Else {
-            yield(timeBetweenShipments);
             unsigned bottleCount = 0;
             for(unsigned i = 0; i < NUM_FLAVOURS; ++i) {
                 shipment[i] = mprng(maxShippedPerFlavour);
                 bottleCount += shipment[i];
             }
+            yield(timeBetweenShipments);
             printer.print(Printer::BottlingPlant, 'G', bottleCount);
             _Accept( getShipment );
         }
