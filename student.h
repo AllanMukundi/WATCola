@@ -23,7 +23,7 @@ _Task Student {
     // student transfers the current vending-machine soda-cost
     // plus $5 to their WATCard via the WATCard office and 
     // attempts another purchase.""
-    void insufficientFunds(VendingMachine *vendingMachine, WATCard::FWATCard watCard);
+    void insufficientFunds(VendingMachine *vendingMachine, WATCard *watCard);
 
     // "If the vending machine is out of the student’s 
     // favourite flavour, the student must obtain a new
