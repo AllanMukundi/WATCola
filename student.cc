@@ -30,7 +30,7 @@ void Student::lostWatCard(WATCard::FWATCard &watCard) {
     // L 
     // WATCard lost
     printer.print(Printer::Student, id, 'L');
-    delete watCard();
+    watCard.reset();
     watCard = cardOffice.create(id, 5);
 }
 
@@ -49,7 +49,7 @@ void Student::main() {
     // S f ,b 
     // starting favourite soda f 
     // number of bottles b to purchase
-    printer.print(Printer::Student, id, 'S', favFlavour, bottlesToPurchase);
+    printer.print(Printer::Student, id, 'S', favFlavour + 1, bottlesToPurchase);
 
     for (unsigned i = 0; i < bottlesToPurchase; i++) {
         // "student yields a random number of times in the range [1, 10]."
@@ -60,59 +60,62 @@ void Student::main() {
         // selecting vending machine 
         // vending machine v selected
         printer.print(Printer::Student, id, 'V', vendingMachine->getId());
-
-        // "need to wait for money to be transferred either from the
-        // WATCardOffice to their WATCard or from Groupoff to their gift card."
-        _Select(watCard) {
-            while (true) {
+        try {
+            // "need to wait for money to be transferred either from the
+            // WATCardOffice to their WATCard or from Groupoff to their gift card."
+            _Select(watCard) {
+                while (true) {
+                    try {
+                        vendingMachine->buy(favFlavour, *watCard());
+                        // B f,b 
+                        // bought soda 
+                        // soda flavour f purchased, WATCard balance b
+                        printer.print(Printer::Student, id, 'B', favFlavour, watCard()->getBalance());
+                        break;
+                    } catch (VendingMachine::Free &) {
+                        freeDrink('A', favFlavour, watCard()->getBalance());
+                        break;
+                    } catch (VendingMachine::Funds &) {
+                        insufficientFunds(vendingMachine, watCard);
+                        break;
+                    } catch (VendingMachine::Stock &) {
+                        outOfStock(vendingMachine);
+                    }
+                }
+            } or _Select (giftCard) {
                 try {
-                    vendingMachine->buy(favFlavour, *watCard());
-                    // B f,b 
-                    // bought soda 
-                    // soda flavour f purchased, WATCard balance b
-                    printer.print(Printer::Student, id, 'B', favFlavour, watCard()->getBalance());
+                    vendingMachine->buy(favFlavour, *giftCard());
+                    // G f,b 
+                    // gift-card soda 
+                    // soda flavour f purchased, giftcard balance b
+                    printer.print(Printer::Student, id, 'G', favFlavour, giftCard()->getBalance());
+                    // "Note, a giftcard future can only be used once, 
+                    // so it must be reset after use to prevent any further usage"
+                    giftCard.reset();
                     break;
                 } catch (VendingMachine::Free &) {
-                    freeDrink('A', favFlavour, watCard()->getBalance());
+                    freeDrink('a', favFlavour, watCard()->getBalance());
                     break;
                 } catch (VendingMachine::Funds &) {
                     insufficientFunds(vendingMachine, watCard);
                     break;
                 } catch (VendingMachine::Stock &) {
                     outOfStock(vendingMachine);
-                } catch (WATCardOffice::Lost &) {
-                    lostWatCard(watCard);
                 }
+                // NOTE: no catch for `WATCardOffice::Lost` since
+                // gift cards can't be lost.
             }
-        } or _Select (giftCard) {
-            try {
-                vendingMachine->buy(favFlavour, *giftCard());
-                // G f,b 
-                // gift-card soda 
-                // soda flavour f purchased, giftcard balance b
-                printer.print(Printer::Student, id, 'G', favFlavour, giftCard()->getBalance());
-                // "Note, a giftcard future can only be used once, 
-                // so it must be reset after use to prevent any further usage"
-                giftCard.reset();
-                break;
-            } catch (VendingMachine::Free &) {
-                freeDrink('a', favFlavour, watCard()->getBalance());
-                break;
-            } catch (VendingMachine::Funds &) {
-                insufficientFunds(vendingMachine, watCard);
-                break;
-            } catch (VendingMachine::Stock &) {
-                outOfStock(vendingMachine);
-            }
-            // NOTE: no catch for `WATCardOffice::Lost` since
-            // gift cards can't be lost.
+        } catch (WATCardOffice::Lost &) {
+            lostWatCard(watCard);
         }
     }
 
     // "Watch out for the case of a student who only buys one 
     // soda using the gift card."
     delete giftCard();
-    delete watCard();
+    try {
+      delete watCard();
+    } catch (WATCardOffice::Lost &) {}
 
     // F 
     // finished
