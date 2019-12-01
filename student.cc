@@ -36,50 +36,56 @@ void Student::lostWatCard(WATCard::FWATCard &watCard) {
 
 void Student::main() {
     unsigned bottlesToPurchase = mprng(1, maxPurchases);
-    VendingMachine::Flavours favouriteFlavour = (VendingMachine::Flavours)mprng(NUM_FLAVOURS-1);
+    VendingMachine::Flavours favFlavour = (VendingMachine::Flavours)mprng(NUM_FLAVOURS-1);
     WATCard::FWATCard watCard = cardOffice.create(id, 5);
+    WATCard::FWATCard giftCard = groupoff.giftCard();
 
-    printer.print(Printer::Kind::Student, id, 'S', (int)favouriteFlavour, bottlesToPurchase);
-    WATCard::FWATCard giftcard = groupoff.giftCard();
+    // S f ,b 
+    // starting favourite soda f 
+    // number of bottles b to purchase
+    printer.print(Printer::Student, id, 'S', favFlavour, bottlesToPurchase);
 
     // buy sodas
     size_t purchased = 0;
     while (purchased < bottlesToPurchase) {
         yield(mprng(1, 10));
-        VendingMachine *machine = nameServer.getMachine(id);
-        printer.print(Printer::Kind::Student, id, 'V', machine->getId());
+        VendingMachine *vendingMachine = nameServer.getMachine(id);
+        // V v 
+        // selecting vending machine 
+        // vending machine v selected
+        printer.print(Printer::Student, id, 'V', vendingMachine->getId());
         try {
             // block until student has a card
-            _Select(watCard || giftcard) {
+            _Select(watCard || giftCard) {
                 if (watCard.available()) {
                     // try to use watCard if available
                     WATCard *physicalcard = watCard(); // Checking if an exception is thrown
 
                     for (;;) {
                         try {
-                        machine->buy(favouriteFlavour, *physicalcard);
+                        vendingMachine->buy(favFlavour, *physicalcard);
                         printer.print(Printer::Kind::Student, id, 'B', physicalcard->getBalance());
                         break;
                         } catch (VendingMachine::Funds e) {
-                        watCard = cardOffice.transfer(id, machine->cost() + 5, physicalcard);
+                        watCard = cardOffice.transfer(id, vendingMachine->cost() + 5, physicalcard);
                         break;
                         } catch (VendingMachine::Stock e) {
-                        machine = nameServer.getMachine(id);
-                        printer.print(Printer::Kind::Student, id, 'V', machine->getId());
+                        vendingMachine = nameServer.getMachine(id);
+                        printer.print(Printer::Kind::Student, id, 'V', vendingMachine->getId());
                         }
                     }
-                } else if (giftcard.available()) {
+                } else if (giftCard.available()) {
                     // try to use gift card if available
                     for (;;) {
                         try {
-                            machine->buy(favouriteFlavour, *giftcard());
-                            printer.print(Printer::Kind::Student, id, 'G', giftcard()->getBalance());
-                            delete giftcard();
-                            giftcard.reset();
+                            vendingMachine->buy(favFlavour, *giftCard());
+                            printer.print(Printer::Kind::Student, id, 'G', giftCard()->getBalance());
+                            delete giftCard();
+                            giftCard.reset();
                             break;
                         } catch (VendingMachine::Stock e) {
-                            machine = nameServer.getMachine(id);
-                            printer.print(Printer::Kind::Student, id, 'V', machine->getId());
+                            vendingMachine = nameServer.getMachine(id);
+                            printer.print(Printer::Kind::Student, id, 'V', vendingMachine->getId());
                         }
                     }
                 }
@@ -101,8 +107,8 @@ void Student::main() {
         } catch (WATCardOffice::Lost e) {
         }
     }
-    _Select (giftcard) {
-        WATCard *gift = giftcard();
+    _Select (giftCard) {
+        WATCard *gift = giftCard();
         delete gift;
     }
 
