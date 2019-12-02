@@ -13,7 +13,6 @@ Truck::Truck(Printer &prt, NameServer &nameServer, BottlingPlant &plant,
 
 void Truck::main() {
     printer.print(Printer::Truck, 'S');
-
     VendingMachine **vendingMachines = nameServer.getMachineList();
     
     // Keep track of the last machine we served. Necessary because of the
@@ -37,7 +36,11 @@ void Truck::main() {
         // (error thrown).
         try {
             plant.getShipment(truckStorage);
-            printer.print(Printer::Truck, 'P');
+            unsigned total = 0;
+            for(unsigned i = 0; i < NUM_FLAVOURS; ++i) {
+                total += truckStorage[i];
+            }
+            printer.print(Printer::Truck, 'P', total);
         } catch (BottlingPlant::Shutdown &) {
             break;
         }

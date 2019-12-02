@@ -14,7 +14,6 @@ void Student::freeDrink(char c, VendingMachine::Flavours favFlavour, unsigned ba
 }
 
 void Student::insufficientFunds(VendingMachine *vendingMachine, WATCard::FWATCard watCard) {
-    delete watCard();
     watCard = cardOffice.transfer(id, 5 + vendingMachine->cost(), watCard());
 }
 

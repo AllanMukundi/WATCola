@@ -12,21 +12,21 @@ void Parent::main() {
         _Accept(Parent::~Parent) {
             break;
         } _Else {
-            // Before each gift is transferred, the parent yields for 
-            // `parentalDelay` times (not random).
-            yield(parentalDelay);
+            // Get the amount of money.
+            unsigned moneyAmount = mprng(1, 3);
 
             // Get the random student.
             unsigned studentID = mprng(numStudents - 1);
 
-            // Get the amount of money.
-            unsigned moneyAmount = mprng(1, 3);
-
-            // Print.
-            printer.print(Printer::Parent, 'D', studentID, moneyAmount);
+            // Before each gift is transferred, the parent yields for 
+            // `parentalDelay` times (not random).
+            yield(parentalDelay);
 
             // Deposit!
             bank.deposit(studentID, moneyAmount);
+
+            // Print.
+            printer.print(Printer::Parent, 'D', studentID, moneyAmount);
         }
     }
     printer.print(Printer::Parent, 'F');
