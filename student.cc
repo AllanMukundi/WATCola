@@ -42,19 +42,21 @@ void Student::main() {
     //     - obtains the location of a vending machine from the name server"
     unsigned bottlesToPurchase = mprng(1, maxPurchases);
     VendingMachine::Flavours favFlavour = (VendingMachine::Flavours)mprng(NUM_FLAVOURS-1);
-    WATCard::FWATCard watCard = cardOffice.create(id, 5);
-    WATCard::FWATCard giftCard = groupoff.giftCard();
 
     // S f ,b 
     // starting favourite soda f 
     // number of bottles b to purchase
     printer.print(Printer::Student, id, 'S', favFlavour + 1, bottlesToPurchase);
 
+    WATCard::FWATCard watCard = cardOffice.create(id, 5);
+    WATCard::FWATCard giftCard = groupoff.giftCard();
+    
     for (unsigned i = 0; i < bottlesToPurchase; i++) {
         // "student yields a random number of times in the range [1, 10]."
         yield(mprng(1, 10));
 
         VendingMachine *vendingMachine = nameServer.getMachine(id);
+        
         // V v 
         // selecting vending machine 
         // vending machine v selected
