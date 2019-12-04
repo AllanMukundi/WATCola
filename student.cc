@@ -64,26 +64,7 @@ void Student::main() {
         try {
             // "need to wait for money to be transferred either from the
             // WATCardOffice to their WATCard or from Groupoff to their gift card."
-            _Select(watCard) {
-                while (true) {
-                    try {
-                        vendingMachine->buy(favFlavour, *watCard());
-                        // B f,b 
-                        // bought soda 
-                        // soda flavour f purchased, WATCard balance b
-                        printer.print(Printer::Student, id, 'B', favFlavour, watCard()->getBalance());
-                        break;
-                    } catch (VendingMachine::Free &) {
-                        freeDrink('A', favFlavour, watCard()->getBalance());
-                        break;
-                    } catch (VendingMachine::Funds &) {
-                        insufficientFunds(vendingMachine, watCard);
-                        break;
-                    } catch (VendingMachine::Stock &) {
-                        outOfStock(vendingMachine);
-                    }
-                }
-            } or _Select (giftCard) {
+            _Select(giftCard) {
                 try {
                     vendingMachine->buy(favFlavour, *giftCard());
                     // G f,b 
@@ -105,6 +86,25 @@ void Student::main() {
                 }
                 // NOTE: no catch for `WATCardOffice::Lost` since
                 // gift cards can't be lost.
+            }
+        } or _Select(watCard) {
+            while (true) {
+                try {
+                    vendingMachine->buy(favFlavour, *watCard());
+                    // B f,b 
+                    // bought soda 
+                    // soda flavour f purchased, WATCard balance b
+                    printer.print(Printer::Student, id, 'B', favFlavour, watCard()->getBalance());
+                    break;
+                } catch (VendingMachine::Free &) {
+                    freeDrink('A', favFlavour, watCard()->getBalance());
+                    break;
+                } catch (VendingMachine::Funds &) {
+                    insufficientFunds(vendingMachine, watCard);
+                    break;
+                } catch (VendingMachine::Stock &) {
+                    outOfStock(vendingMachine);
+                }
             }
         } catch (WATCardOffice::Lost &) {
             lostWatCard(watCard);
