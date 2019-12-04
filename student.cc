@@ -52,8 +52,9 @@ void Student::main() {
     WATCard::FWATCard giftCard = groupoff.giftCard();
 
     bool is_giftcard_deleted = false;
+    unsigned bottlesPurchased = 0;
     
-    for (unsigned i = 0; i < bottlesToPurchase; i++) {
+    while (bottlesPurchased < bottlesToPurchase) {
         // "student yields a random number of times in the range [1, 10]."
         yield(mprng(1, 10));
 
@@ -77,11 +78,13 @@ void Student::main() {
                         // "Note, a giftcard future can only be used once, 
                         // so it must be reset after use to prevent any further usage"
                         is_giftcard_deleted = true;
+                        bottlesPurchased++;
                         delete giftCard();
                         giftCard.reset();
                         break;
                     } catch (VendingMachine::Free &) {
                         freeDrink('a', favFlavour, watCard()->getBalance());
+                        break;
                     } catch (VendingMachine::Funds &) {
                         insufficientFunds(vendingMachine, watCard);
                     } catch (VendingMachine::Stock &) {
@@ -98,9 +101,11 @@ void Student::main() {
                         // bought soda 
                         // soda flavour f purchased, WATCard balance b
                         printer.print(Printer::Student, id, 'B', favFlavour, watCard()->getBalance());
+                        bottlesPurchased++;
                         break;
                     } catch (VendingMachine::Free &) {
                         freeDrink('A', favFlavour, watCard()->getBalance());
+                        break;
                     } catch (VendingMachine::Funds &) {
                         insufficientFunds(vendingMachine, watCard);
                     } catch (VendingMachine::Stock &) {
